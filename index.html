@@ -23,6 +23,10 @@ textarea {
 	padding: 10px;
 	width: 100%;
 }
+code {
+    background-color: #f5f6f8;
+    border-radius: 0.2rem;
+}
 pre {
     background-color: #f8f9fa;
     border-radius: 0.2rem;
@@ -32,6 +36,9 @@ pre code {
 	background-color: transparent;
 	padding: 0;
 }
+
+#exp { display: none; }
+.show-exp #exp { display: block; }
 		</style>
 	</head>
 	<body>
@@ -51,6 +58,11 @@ pre code {
 			<fieldset>
 				<legend>Decoded Payload</legend>
 				<pre><code id="payload"></code></pre>
+				<p id="exp">
+					<strong>exp:</strong><br>
+					<code id="exp-utc"></code><br>
+					Local: <code id="exp-local"></code>
+				</p>
 			</fieldset>
 			<fieldset>
 				<legend>Decoded Header</legend>
@@ -71,10 +83,31 @@ function decodeJWT() {
 	try {
 		display(atob(payload), 'payload');
 		display(atob(header), 'header');
+
+		try {
+			const dt = new Date(1000 * JSON.parse(atob(payload))?.exp);
+			if (isNaN(dt)) {
+				throw new Error('invalid date');
+			}
+			display(dt.toUTCString(), 'exp-utc');
+			display(dt.toLocaleString(), 'exp-local');
+			showExp();
+		} catch (e) {
+			hideExp();
+		}
 	} catch (e) {
+		hideExp();
 		display('invalid JWT', 'payload');
 		display('invalid JWT', 'header');
 	}
+}
+
+function showExp() {
+	bodyDomObj.classList.add("show-exp");
+}
+
+function hideExp() {
+	bodyDomObj.classList.remove("show-exp");
 }
 
 function display(str, id) {
@@ -98,6 +131,8 @@ function display(str, id) {
 	}
 	document.getElementById(id).textContent = output;
 }
+
+const bodyDomObj = document.getElementsByTagName('body')[0];
 
 const token = new URLSearchParams(
 		document.location.search.substring(1)
