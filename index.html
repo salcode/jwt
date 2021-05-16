@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>JSON Web Token (JWT) Decode - salcode</title>
+		<style>
+body {
+	font-size: 18px;
+}
+.container {
+	display: flex;
+	flex-wrap: wrap;
+	margin: 0 auto;
+}
+fieldset {
+  flex-grow: 1;
+  margin-bottom: 2rem;
+}
+textarea {
+	box-sizing: border-box;
+	font-size: 20px;
+	min-height: 10em;
+	padding: 10px;
+	width: 100%;
+}
+pre {
+    background-color: #f8f9fa;
+    border-radius: 0.2rem;
+    padding: 16px;
+}
+pre code {
+	background-color: transparent;
+	padding: 0;
+}
+		</style>
+	</head>
+	<body>
+		<h1>Single Page Offline JSON Web Token (JWT) Decoder</h1>
+
+		<div class="container">
+
+			<fieldset>
+				<legend>Encoded JWT Token</legend>
+				<div>
+					<textarea
+						id="encoded-jwt"
+						onchange="decodeJWT();"
+					>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiIxMTIzNSIsIm5hbWUiOiJTYWwgRmVycmFyZWxsbyIsImV4cCI6MTY0MTA2MDAwMH0.HB696HBQyyGzZ7cMRbii6WDutFxa_vDAK6HZoKMgs0U</textarea>
+				</div>
+			</fieldset>
+			<fieldset>
+				<legend>Decoded Payload</legend>
+				<pre><code id="payload"></code></pre>
+			</fieldset>
+			<fieldset>
+				<legend>Decoded Header</legend>
+				<pre><code id="header"></code></pre>
+			</fieldset>
+		</div>
+		<p>
+			This webpage is entirely self-contained (no external JavaScript or CSS files are loaded). Information entered on this page does NOT leave your computer. For further security you can save this page on your computer or pull your own copy from <a href="https://github.com/salcode/jwtdecode">github.com/salcode/jwtdecode</a>.
+		</p>
+		<p>
+			Created by <a href="https://salferrarello.com">Sal Ferrarello</a> / <a href="https://twitter.com/salcode">@salcode</a>
+		</p>
+
+		<script>
+function decodeJWT() {
+	const jwt = document.getElementById('encoded-jwt').value;
+	const [header, payload, signature] = jwt.split('.');
+	try {
+		display(atob(payload), 'payload');
+		display(atob(header), 'header');
+	} catch (e) {
+		display('invalid JWT', 'payload');
+		display('invalid JWT', 'header');
+	}
+}
+
+function display(str, id) {
+	let output = '';
+	let indent = 0;
+	for (i=0; i<str.length; i++) {
+		if ('}' === str[i]) {
+			indent--;
+			output += "\n";
+			output += "  ".repeat(indent);
+		}
+
+		output += str[i];
+
+		if ('{' === str[i]) { indent++; }
+
+		if ([',', '{'].includes(str[i])) {
+			output += "\n";
+			output += "  ".repeat(indent);
+		}
+	}
+	document.getElementById(id).innerHTML = output;
+}
+decodeJWT();
+		</script>
+	</body>
+</html>
