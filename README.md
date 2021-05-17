@@ -8,7 +8,7 @@ To address this concern, I created this single HTML page that does not load any 
 
 The page is entirely self-contained (no external JavaScript or CSS files are loaded). Information entered on the page does NOT leave your computer. For further security you can save the page on your computer or pull your own copy from [github.com/salcode/jwtdecode](https://github.com/salcode/jwtdecoder).
 
-Found online at [jwtdecode.salcode.com](https://jwtdecode.salcode.com/)
+Found online at [jwt.salcode.com](https://jwt.salcode.com/)
 
 ## Author
 
