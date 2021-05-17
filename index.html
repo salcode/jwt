@@ -98,6 +98,14 @@ function display(str, id) {
 	}
 	document.getElementById(id).textContent = output;
 }
+
+const token = new URLSearchParams(
+		document.location.search.substring(1)
+	).get('token');
+
+if (token) {
+	display(token, 'encoded-jwt');
+}
 decodeJWT();
 		</script>
 	</body>
